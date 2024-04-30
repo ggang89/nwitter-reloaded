@@ -86,7 +86,7 @@ export default function CreateAccount() {
   return (
     <Wrapper>
       <Title>Join ✖</Title>
-      <Form>
+      <Form onSubmit={onSubmit}>
         <Input
           onChange={onChange}
           name="name"
