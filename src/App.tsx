@@ -4,7 +4,7 @@ import Home from "./routes/home";
 import Profile from "./routes/profile";
 import Login from "./routes/login";
 import CreateAccount from "./routes/create-account";
-import { createGlobalStyle } from "styled-components";
+import { createGlobalStyle, styled } from "styled-components";
 import reset from "styled-reset";
 import { useEffect, useState } from "react";
 import LoadingScreen from "./components/loading-screen";
@@ -44,22 +44,29 @@ body{
   color:white;
   font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
 }`;
+
+const Wrapper = styled.div`
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+`;
+
 function App() {
   const [isLoading, setIsLoading] = useState(true);
   const init = async () => {
-   await auth.authStateReady();
-   //firebase를 통해서 로그인 여부 확인
-   //authStateReady: 최초 인증 상태가 완료될 때 실행되는 promise를 return함
-   setIsLoading(false);
+    await auth.authStateReady();
+    //firebase를 통해서 로그인 여부 확인
+    //authStateReady: 최초 인증 상태가 완료될 때 실행되는 promise를 return함
+    setIsLoading(false);
   };
   useEffect(() => {
     init();
   }, []);
   return (
-    <>
+    <Wrapper>
       <GlobalStyles />
       {isLoading ? <LoadingScreen /> : <RouterProvider router={router} />}
-    </>
+    </Wrapper>
   );
 }
 
