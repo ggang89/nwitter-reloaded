@@ -1,9 +1,7 @@
 // Import the functions you need from the SDKs you need
 import { initializeApp } from "firebase/app";
-// TODO: Add SDKs for Firebase products that you want to use
-// https://firebase.google.com/docs/web/setup#available-libraries
+import { getAuth } from "firebase/auth";
 
-// Your web app's Firebase configuration
 const firebaseConfig = {
   apiKey: "AIzaSyB7kuOGskn7GUHnwes4bph10rws0xS08KA",
   authDomain: "nwitter-reloaded-1f483.firebaseapp.com",
@@ -14,4 +12,8 @@ const firebaseConfig = {
 };
 
 // Initialize Firebase
+//config 옵션을 통해서 app을 생성시킴
 const app = initializeApp(firebaseConfig);
+
+export const auth = getAuth(app);
+//app에 대한 인증 서비스를 사용
