@@ -1,19 +1,20 @@
-import { styled } from "styled-components";
+import { createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
 import { useState } from "react";
+import { styled } from "styled-components";
+import { auth } from "../firebase";
+import { useNavigate } from "react-router-dom";
 
 const Wrapper = styled.div`
   height: 100%;
   display: flex;
   flex-direction: column;
-  aligh-items: center;
+  align-items: center;
   width: 420px;
   padding: 50px 0px;
 `;
-
 const Title = styled.h1`
   font-size: 42px;
 `;
-
 const Form = styled.form`
   margin-top: 50px;
   display: flex;
@@ -21,7 +22,6 @@ const Form = styled.form`
   gap: 10px;
   width: 100%;
 `;
-
 const Input = styled.input`
   padding: 10px 20px;
   border-radius: 50px;
@@ -35,13 +35,13 @@ const Input = styled.input`
     }
   }
 `;
-
 const Error = styled.span`
   font-weight: 600;
   color: tomato;
 `;
 
 export default function CreateAccount() {
+  const navigate = useNavigate();
   const [isLoading, setLoading] = useState(false);
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
@@ -59,21 +59,33 @@ export default function CreateAccount() {
       setPassword(value);
     }
   };
-  const onSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    if (isLoading || name === "" || email === "" || password === "") return;
     try {
-      //create an accout
-      //set the name of the user
-      //redirect to the home page
+      setLoading(true);
+      const credentials = await createUserWithEmailAndPassword(
+        auth,
+        email,
+        password
+      );
+      console.log(credentials.user);
+      //나는 콘솔에 정보가 나오지 않는다.왜?
+      await updateProfile(credentials.user, {
+        displayName: name,
+      });
+      navigate("/");
+      //원하는 페이지로 이동시켜주는 HOOK
+      //자동 안되는데
     } catch (e) {
-      //setError
+      // setError
     } finally {
       setLoading(false);
     }
   };
   return (
     <Wrapper>
-      <Title>Log into ✖</Title>
+      <Title>Join ✖</Title>
       <Form>
         <Input
           onChange={onChange}
