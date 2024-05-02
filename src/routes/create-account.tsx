@@ -70,13 +70,11 @@ export default function CreateAccount() {
         password
       );
       console.log(credentials.user);
-      //나는 콘솔에 정보가 나오지 않는다.왜?
       await updateProfile(credentials.user, {
         displayName: name,
       });
       navigate("/");
       //원하는 페이지로 이동시켜주는 HOOK
-      //자동 안되는데
     } catch (e) {
       // setError
     } finally {
