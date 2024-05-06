@@ -33,8 +33,8 @@ const AttachFileButton = styled.label`
   color: #1d9bf0;
   text-align: center;
   border-radius: 20px;
-  border: 1px solid 1d9bf0;
-  font-size: 16px;
+  border: 1px solid #1d9bf0;
+  font-size: 14px;
   font-weight: 600;
   cursor: pointer;
 `;
