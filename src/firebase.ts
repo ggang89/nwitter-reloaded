@@ -20,7 +20,9 @@ const app = initializeApp(firebaseConfig);
 export const auth = getAuth(app);
 //app에 대한 인증 서비스를 사용
 
+//데이터베이스와 스토리지에 대한 액세스 권한을 얻음
+//addDoc(collection())에서 firebase 인수로도 사용함
 export const storage = getStorage(app);
 
 export const db = getFirestore(app);
-//데이터베이스와 스토리지에 대한 액세스 권한을 얻음
+
