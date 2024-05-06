@@ -79,15 +79,18 @@ export default function PostTweetForm() {
 
     try {
       setLoading(true);
+      //addDoc: 새로운 document 생성 함수
+      //1.어떤 컬렉션에 document 생성할지 지정(twwets, users, comments..)
+      //2.collection은 최소 2개이 상의 firebase 인수가 필요하다 + 이름
+      //=>tweets 컬렉션에 document추가
       await addDoc(collection(db, "tweets"), {
         tweet,
-        createdAt: Date.now(),
+        createdAt: Date.now(), //트윗이 생성된 시간 알 수 있음
         username: user.displayName || "Anonymous",
+        userId: user.uid,
+        //트윗 삭제를 위해서 사용자의 ID를 저장해야함
+        //트윗 삭제하려는 유저의 ID와 저장된 userId가 일치하는지 확인필요
       });
-      //새로운 document 생성
-      //1.어떤 컬렉션에 documetn 생성할지 지정(twwets, users, comments..)
-      //2.collection은 최소 2개이 상의 firebase 인수가 필요하다 + 이름
-      //=>twweets 컬렉션에 document추가
     } catch (e) {
       console.log(e);
     } finally {
