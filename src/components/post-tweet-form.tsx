@@ -69,7 +69,7 @@ export default function PostTweetForm() {
     setTweet(e.target.value);
   };
   const onFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { files } = e.target;
+  const { files } = e.target;
     if (files && files.length === 1 && files[0].size < maxFileSize) {
       setFile(files[0]);
     }
@@ -82,7 +82,7 @@ export default function PostTweetForm() {
     try {
       setLoading(true);
       //addDoc: 새로운 document 생성 함수
-      //1.어떤 컬렉션에 document 생성할지 지정(twwets, users, comments..)
+      //1.어떤 컬렉션에 document 생성할지 지정(tweets, users, comments..)
       //2.collection은 최소 2개이 상의 firebase 인수가 필요하다 + 이름
       //=>tweets 컬렉션에 document추가
       const doc = await addDoc(collection(db, "tweets"), {
@@ -108,7 +108,7 @@ export default function PostTweetForm() {
         await updateDoc(doc, {
           photo: url,
         });
-        //document를 업데이트 해줘야함 => 사진URL저장
+        //document를 업데이트 해줘야함 => 사진URL 저장
         //첫번째 인수 => 업데이트하고 싶은 문서에 대한 참조
         //두번째 인수 => 업데이트하고 싶은 데이터
       }
