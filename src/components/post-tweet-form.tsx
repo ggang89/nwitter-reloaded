@@ -64,12 +64,13 @@ export default function PostTweetForm() {
   const [isLoading, setLoading] = useState(false);
   const [tweet, setTweet] = useState("");
   const [file, setFile] = useState<File | null>(null);
+  const maxFileSize = 1024 * 1024; //1MB
   const onChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     setTweet(e.target.value);
   };
   const onFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { files } = e.target;
-    if (files && files.length === 1) {
+    if (files && files.length === 1 && files[0].size < maxFileSize) {
       setFile(files[0]);
     }
   };
