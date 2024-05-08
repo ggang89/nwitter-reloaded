@@ -2,6 +2,7 @@ import { collection, getDocs, orderBy, query } from "firebase/firestore";
 import { useEffect, useState } from "react";
 import { styled } from "styled-components";
 import { db } from "../firebase";
+import Tweet from "./tweet";
 
 export interface ITweet {
   id: string;
@@ -39,5 +40,11 @@ export default function Timeline() {
     fetchTweets();
   }, []);
   //개발모드에서는 useEffect가 2번 호출된다.그래서 콘솔에 2번 나오는 것
-  return <Wrapper></Wrapper>;
+  return (
+    <Wrapper>
+      {tweets.map((tweet) => (
+        <Tweet key={tweet.id} {...tweet} />
+      ))}
+    </Wrapper>
+  );
 }
