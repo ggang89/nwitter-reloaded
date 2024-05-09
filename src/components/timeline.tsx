@@ -1,8 +1,9 @@
-import { collection, getDocs, orderBy, query } from "firebase/firestore";
+import { collection, getDocs,limit, onSnapshot, orderBy, query } from "firebase/firestore";
 import { useEffect, useState } from "react";
 import { styled } from "styled-components";
 import { db } from "../firebase";
 import Tweet from "./tweet";
+import { Unsubscribe } from "firebase/auth";
 
 export interface ITweet {
   id: string;
@@ -13,31 +14,57 @@ export interface ITweet {
   createAt: number;
 }
 
-const Wrapper = styled.div``;
+const Wrapper = styled.div`
+display:flex;
+gap:10px;
+flex-direction:column;
+`;
 
 export default function Timeline() {
   const [tweets, setTweet] = useState<ITweet[]>([]);
-  const fetchTweets = async () => {
-    const tweetsQuery = query(
-      collection(db, "tweets"),
-      orderBy("createdAt", "desc") //createdAt을 기준으로 내림차순 정렬(최신순)
-    );
-    const snapshot = await getDocs(tweetsQuery);
-    const tweets = snapshot.docs.map((doc) => {
-      const { tweet, createAt, userId, username, photo } = doc.data();
-      return {
-        tweet,
-        createAt,
-        userId,
-        username,
-        photo,
-        id: doc.id,
-      };
-    });
-    setTweet(tweets);
-  };
+  //쿼리 생성
+  
   useEffect(() => {
+    let unsubscribe :Unsubscribe | null = null;
+    const fetchTweets = async () => {
+      const tweetsQuery = query(
+        collection(db, "tweets"),
+        orderBy("createdAt", "desc"), //createdAt을 기준으로 내림차순 정렬(최신순)
+        limit(25)//25개 트윗만 보여줌
+      );
+      //쿼리에 해당하는 문서를 가져옴
+     /*  const snapshot = await getDocs(tweetsQuery);
+      const tweets = snapshot.docs.map((doc) => {
+        const { tweet, createAt, userId, username, photo } = doc.data();
+        return {
+          tweet,
+          createAt,
+          userId,
+          username,
+          photo,
+          id: doc.id,
+        };
+      }); */
+    
+     unsubscribe = await onSnapshot(tweetsQuery,(snapshot)=>{
+      const tweets = snapshot.docs.map((doc)=>{
+        const {tweet,createdAt,userId,username,photo} =doc.data();
+        return{
+          tweet,
+          createdAt,
+          userId,
+          username,
+          photo,
+          id:doc.id,
+        };
+      });
+      setTweet(tweets);
+    });
+  };
     fetchTweets();
+    return()=>{
+      unsubscribe && unsubscribe();
+    }
   }, []);
   //개발모드에서는 useEffect가 2번 호출된다.그래서 콘솔에 2번 나오는 것
   return (
