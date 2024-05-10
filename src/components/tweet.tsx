@@ -72,7 +72,7 @@ export default function Tweet({ username, photo, tweet, userId, id }: ITweet) {
         {user?.uid === userId ? (
           <DeleteButton onClick={onDelete}>Delete</DeleteButton>
         ) : null}
-        //로그인한 사람과 트윗의 user가 불일치하면 삭제버튼을 숨긴다.
+        {/* 로그인한 사람과 트윗의 user가 불일치하면 삭제버튼을 숨긴다. */}
       </Column>
       <Column>{photo ? <Photo src={photo} /> : null}</Column>
     </Wrapper>
