@@ -42,15 +42,20 @@ const DeleteButton = styled.button`
   cursor: pointer;
 `;
 
-export default function Tweet({ username, photo, tweet, userId }: ITweet) {
+export default function Tweet({ username, photo, tweet, userId, id }: ITweet) {
   const user = auth.currentUser;
   const onDelete = async () => {
     const ok = confirm("Are you sure you want to delete this tweet?");
     if (!ok || user?.uid !== userId) return;
+    //ok하지 않거나 user가 아니면 함수 종료
     try {
       await deleteDoc(doc(db, "tweets", id));
+      //deleteDoc 매개변수 => 삭제할 문서에 대한 참조
+      //doc함수를 통해 문서찾음 => DB안에 tweets컬렉션에 문서
       if (photo) {
+        //1.만약 사진이 있으면
         const photoRef = ref(storage, `tweets/${user.uid}/${id}`);
+        //2.사진의 레퍼런스를 받는다 => storage 인스턴스 & 경로
         await deleteObject(photoRef);
       }
     } catch (e) {

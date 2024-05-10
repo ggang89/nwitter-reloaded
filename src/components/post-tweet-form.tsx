@@ -97,7 +97,7 @@ export default function PostTweetForm() {
         //파일이 업로드 되면 파일 위치에 대한 reference를 받아야 함
         const locationRef = ref(
           storage,
-          `tweets/${user.uid}-${user.displayName}/${doc.id}`
+          `tweets/${user.uid}/${doc.id}`
         );
         //tweets폴더 안에 각 유저들의 폴더 생성해서 그 안에 이미지 저장함
         const result = await uploadBytes(locationRef, file);
