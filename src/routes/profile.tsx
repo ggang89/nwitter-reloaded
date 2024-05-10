@@ -1,6 +1,8 @@
 import { styled } from "styled-components";
-import { auth } from "../firebase";
+import { auth, storage } from "../firebase";
 import { useState } from "react";
+import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
+import { updateProfile } from "firebase/auth";
 
 const Wrapper = styled.div`
   display: flex;
@@ -39,6 +41,23 @@ const Name = styled.span`
 export default function Profile() {
   const user = auth.currentUser;
   const [avatar, setAvatar] = useState(user?.photoURL);
+  const onAvatarChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { files } = e.target;
+    if (!user) return;
+    if (files && files.length === 1) {
+      const file = files[0];
+      const locationRef = ref(storage, `avatars/${user?.uid}`);
+      //avatar라는 폴더에 유저ID로 사진을 업로드함
+      //=>user가 새로운 이미지로 업로드할 때 덮어쓰기됨
+      const result = await uploadBytes(locationRef, file);
+      const avatarUrl = await getDownloadURL(result.ref);
+      setAvatar(avatarUrl);
+      //사진URL을 state에 할당해서 유저 이미지가 바뀜
+      await updateProfile(user, {
+        photoURL: avatarUrl,
+      });
+    }
+  };
   return (
     <Wrapper>
       <AvatarUpload htmlFor="avatar">
@@ -56,7 +75,12 @@ export default function Profile() {
           </svg>
         )}
       </AvatarUpload>
-      <AvatarInput id="avatar" type="file" accept="image/*" />
+      <AvatarInput
+        onChange={onAvatarChange}
+        id="avatar"
+        type="file"
+        accept="image/*"
+      />
       {/* input창은 숨김 */}
       <Name>
         {user?.displayName ? user.displayName : "Anonymous"};
