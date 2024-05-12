@@ -1,8 +1,19 @@
 import { styled } from "styled-components";
-import { auth, storage } from "../firebase";
+import { auth, db, storage } from "../firebase";
 import { useState } from "react";
 import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
 import { updateProfile } from "firebase/auth";
+import { ITweet } from "../components/timeline";
+import {
+  collection,
+  getDoc,
+  getDocs,
+  limit,
+  orderBy,
+  query,
+  where,
+} from "firebase/firestore";
+import Tweet from "../components/tweet";
 
 const Wrapper = styled.div`
   display: flex;
@@ -37,10 +48,17 @@ const AvatarInput = styled.input`
 const Name = styled.span`
   font-size: 22px;
 `;
+const Tweets = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  width: 100%;
+`;
 
 export default function Profile() {
   const user = auth.currentUser;
   const [avatar, setAvatar] = useState(user?.photoURL);
+  const [tweets, setTweets] = useState<ITweet[]>([]);
   const onAvatarChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const { files } = e.target;
     if (!user) return;
@@ -57,6 +75,32 @@ export default function Profile() {
         photoURL: avatarUrl,
       });
     }
+  };
+  const fetchTweets = async () => {
+    const tweetQuery = query(
+      collection(db, "tweets"),
+      //데이터베이스 인스턴스 전달+컬렉션 이름
+      where("userId", "==", user?.uid),
+      //조건에 맞는 tweets만 가져오도록 필터링 해줌
+      //조건: 유저ID가 현재 로그인한 ID와 같은 tweet
+      //firebase에 어떤 필터를 사용할지 알려줘야함 => firebase홈페이지에서 설정
+      orderBy("createdAt", "desc"),
+      limit(25)
+    );
+    const snapshot = await getDocs(tweetQuery);
+    const tweets = snapshot.docs.map((doc) => {
+      const { tweet, createdAt, userId, username, photo } = doc.data();
+      //변수에 tweets내용과 만든날짜,유져ID,닉네임,사진 추가
+      return {
+        tweet,
+        createdAt,
+        userId,
+        username,
+        photo,
+        id: doc.id,
+      };
+    });
+    setTweets(tweets);
   };
   return (
     <Wrapper>
@@ -86,6 +130,11 @@ export default function Profile() {
         {user?.displayName ? user.displayName : "Anonymous"};
         {/* 더 간략히 => {user?.displayName?? "Anonymous"} */}
         {/* user가 닉네임 있으면 보여주고, 없으면 anonymous보여줌 */}
+        <Tweets>
+          {tweets.map((tweet) => (
+            <Tweet key={tweet.id} {...tweet} />
+          ))}
+        </Tweets>
       </Name>
     </Wrapper>
   );
