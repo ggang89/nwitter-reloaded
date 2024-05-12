@@ -1,12 +1,11 @@
 import { styled } from "styled-components";
 import { auth, db, storage } from "../firebase";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
 import { updateProfile } from "firebase/auth";
 import { ITweet } from "../components/timeline";
 import {
   collection,
-  getDoc,
   getDocs,
   limit,
   orderBy,
@@ -83,7 +82,8 @@ export default function Profile() {
       where("userId", "==", user?.uid),
       //조건에 맞는 tweets만 가져오도록 필터링 해줌
       //조건: 유저ID가 현재 로그인한 ID와 같은 tweet
-      //firebase에 어떤 필터를 사용할지 알려줘야함 => firebase홈페이지에서 설정
+      //firebase에 어떤 필터를 사용할지 알려줘야함
+      //=>콘솔 오류에 뜬 주소로 들어가서 firebase홈페이지에서 설정
       orderBy("createdAt", "desc"),
       limit(25)
     );
@@ -102,6 +102,9 @@ export default function Profile() {
     });
     setTweets(tweets);
   };
+  useEffect(() => {
+    fetchTweets();
+  }, []);
   return (
     <Wrapper>
       <AvatarUpload htmlFor="avatar">
