@@ -17,7 +17,7 @@ export interface ITweet {
   tweet: string;
   userId: string;
   username: string;
-  createAt: number;
+  createdAt: number;
 }
 
 const Wrapper = styled.div`
