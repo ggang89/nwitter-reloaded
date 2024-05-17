@@ -10,11 +10,11 @@ const Button = styled.span`
   width: 100%;
   color: black;
   padding: 10px 20px;
-  baorder-radius: 50px;
+  border-radius: 50px;
   border: 0;
   display: flex;
   gap: 5px;
-  align-item: center;
+  align-items: center;
   justify-content: center;
   cursor: pointer;
 `;
@@ -40,7 +40,7 @@ export default function GithubButton() {
   };
   return (
     <Button onClick={onClick}>
-      <Logo src="/github-logo.svg" />
+      <Logo src="/github-log.svg" />
       Continue with Github
     </Button>
   );
